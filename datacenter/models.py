@@ -33,12 +33,22 @@ class Visit(models.Model):
 
 
 def get_duration(visit):
-    local_time = localtime()
     entered_at = visit.entered_at
-    resides = local_time - entered_at
-    total_duration = resides.total_seconds()
-    return total_duration
+    leaved_at = visit.leaved_at
+    total_duration = leaved_at - entered_at
+    if leaved_at:
+        return total_duration.total_seconds()
+    else:
+        return 0
+
+
+def format_duration(visit):
+    duration = get_duration(visit)
+    duration_timedelta = datetime.timedelta(seconds=duration)
+    formatted_duration = str(duration_timedelta)
+    return formatted_duration
 
 
 visit = Visit.objects.all()[0]
 print(get_duration(visit))
+print(format_duration(visit))
