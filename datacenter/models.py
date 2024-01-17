@@ -35,20 +35,20 @@ class Visit(models.Model):
 def get_duration(visit):
     entered_at = visit.entered_at
     leaved_at = visit.leaved_at
-    total_duration = leaved_at - entered_at
+    local_time = localtime()
     if leaved_at:
-        return total_duration.total_seconds()
+        return (leaved_at - entered_at).total_seconds()
     else:
-        return 0
+        return (local_time - entered_at).total_seconds()
 
 
 def format_duration(visit):
     duration = get_duration(visit)
-    duration_timedelta = datetime.timedelta(seconds=duration)
-    formatted_duration = str(duration_timedelta)
+    hours, remainder = divmod(duration, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    formatted_duration = ('{:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds)))
     return formatted_duration
 
-
-visit = Visit.objects.all()[0]
-print(get_duration(visit))
-print(format_duration(visit))
+# visit = Visit.objects.all()[0]
+# print(get_duration(visit))
+# print(format_duration(visit))
